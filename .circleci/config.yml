@@ -8,20 +8,16 @@ jobs:
     steps:
       - checkout
 
-      # No lockfile exists yet (no requirements.txt / pyproject.toml / etc.),
-      # so there are no dependencies to install or cache. Restore-cache,
-      # install, and save-cache steps are intentionally omitted.
-      # Add them once a dependency file is introduced.
-
-      # No build command exists yet for this scaffolding-only project.
-      # Add a build step (e.g. `python -m build`) once packaging is defined.
+      - run:
+          name: Install dependencies
+          command: |
+            python -m pip install --upgrade pip
+            pip install -e . "pytest>=8.0"
 
       - run:
           name: Run tests
           command: |
-            echo "No test suite configured yet."
-            echo "tests/ is a placeholder directory."
-            exit 0
+            python -m pytest
 
       # No lint command exists yet (no ruff/flake8/mypy config).
       # Add a lint step once a linter is introduced.
