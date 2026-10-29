@@ -1,0 +1,33 @@
+version: 2.1
+
+jobs:
+  python:
+    docker:
+      - image: cimg/python:3.13
+    working_directory: ~/battery-arbitrage
+    steps:
+      - checkout
+
+      # No lockfile exists yet (no requirements.txt / pyproject.toml / etc.),
+      # so there are no dependencies to install or cache. Restore-cache,
+      # install, and save-cache steps are intentionally omitted.
+      # Add them once a dependency file is introduced.
+
+      # No build command exists yet for this scaffolding-only project.
+      # Add a build step (e.g. `python -m build`) once packaging is defined.
+
+      - run:
+          name: Run tests
+          command: |
+            echo "No test suite configured yet."
+            echo "tests/ is a placeholder directory."
+            exit 0
+
+      # No lint command exists yet (no ruff/flake8/mypy config).
+      # Add a lint step once a linter is introduced.
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - python
