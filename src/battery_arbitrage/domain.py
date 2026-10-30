@@ -7,6 +7,7 @@ MarketName: TypeAlias = str
 
 MarketPrices: TypeAlias = dict[datetime, float]
 MarketData: TypeAlias = dict[MarketName, MarketPrices]
+MarketIntervals: TypeAlias = dict[MarketName, timedelta]
 MarketPricesAtTime: TypeAlias = dict[MarketName, float]
 TimelinePrices: TypeAlias = dict[datetime, MarketPricesAtTime]
 
