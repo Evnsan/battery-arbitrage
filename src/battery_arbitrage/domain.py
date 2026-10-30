@@ -20,6 +20,7 @@ EnergyByTime: TypeAlias = dict[datetime, float]
 class Timeline:
     prices: TimelinePrices
     common_period: timedelta
+    market_intervals: MarketIntervals
 
 
 @dataclass(frozen=True)
