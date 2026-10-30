@@ -38,6 +38,9 @@ INVALID_PRICE_TEXT = "abc"
 INVALID_TIMESTAMP_TEXT = "not a date"
 MONTH_FIRST_TIMESTAMP_TEXT = "1/2/18 0:30"
 PARSED_MONTH_FIRST_TIMESTAMP = datetime(2018, 1, 2, 0, 30)
+ISO_TIMESTAMP_TEXT = "2018-01-02T00:30:00"
+ISO_TIMESTAMP_SPACE_TEXT = "2018-01-02 00:30:00"
+PARSED_ISO_TIMESTAMP = datetime(2018, 1, 2, 0, 30)
 
 
 # --- Helpers ----------------------------------------------------------------
@@ -150,6 +153,36 @@ def test_month_first_timestamp_strings_are_parsed(tmp_path):
     }
 
 
+@pytest.mark.parametrize(
+    "timestamp_text", [ISO_TIMESTAMP_TEXT, ISO_TIMESTAMP_SPACE_TEXT]
+)
+def test_iso_timestamp_strings_are_parsed(tmp_path, timestamp_text):
+    rows = [
+        [None, PRICE_HEADER],
+        [timestamp_text, HEADER_LOOKUP_PRICE],
+    ]
+    path = write_workbook(tmp_path / "m.xlsx", {SHEET_HOURLY: rows})
+
+    assert parse_market_data(path)[SHEET_HOURLY] == {
+        PARSED_ISO_TIMESTAMP: HEADER_LOOKUP_PRICE
+    }
+
+
+def test_blank_rows_are_ignored(tmp_path):
+    rows = [
+        [None, PRICE_HEADER],
+        [START_TIME, VALID_PRICE],
+        [None, None],
+        [NEXT_HOUR, NEXT_VALID_PRICE],
+    ]
+    path = write_workbook(tmp_path / "m.xlsx", {SHEET_HOURLY: rows})
+
+    assert parse_market_data(path)[SHEET_HOURLY] == {
+        START_TIME: VALID_PRICE,
+        NEXT_HOUR: NEXT_VALID_PRICE,
+    }
+
+
 # --- Bad input -> ValueError naming the sheet -------------------------------
 
 
@@ -162,8 +195,22 @@ INVALID_SHEET_CASES = [
         [[TIMESTAMP_HEADER, UNEXPECTED_HEADER], VALID_ROW], id="no-price-column"
     ),
     pytest.param(
+        [
+            [None, "Market 1 Price [£/MWh]", "Market 2 Price [£/MWh]"],
+            [START_TIME, VALID_PRICE, NEXT_VALID_PRICE],
+        ],
+        id="multiple-price-columns",
+    ),
+    pytest.param(
         [VALID_HEADER, VALID_ROW, [NEXT_HOUR, INVALID_PRICE_TEXT]],
         id="text-price",
+    ),
+    pytest.param(
+        [VALID_HEADER, VALID_ROW, [NEXT_HOUR, "NaN"]], id="nan-price"
+    ),
+    pytest.param(
+        [VALID_HEADER, VALID_ROW, [NEXT_HOUR, "Infinity"]],
+        id="infinite-price",
     ),
     pytest.param(
         [VALID_HEADER, VALID_ROW, [NEXT_HOUR, None]], id="blank-price"
@@ -197,15 +244,14 @@ def test_invalid_sheet_data_raises_value_error_with_sheet_name(tmp_path, rows):
         parse_market_data(path)
 
 
-# --- Smoke test against the provided workbook -------------------------------
+# --- Smoke test against the supported example workbook ----------------------
 
-REAL_WORKBOOKS = sorted(Path("data").glob("*.xlsx"))
+DATA_DIR = Path(__file__).resolve().parents[1] / "data"
+EXAMPLE_WORKBOOK = DATA_DIR / "cleaned_market_data.xlsx"
 
 
-@pytest.mark.skipif(not REAL_WORKBOOKS, reason="no workbook found in data/")
-def test_parses_the_provided_workbook():
-    first_workbook = REAL_WORKBOOKS[0]
-    data = parse_market_data(str(first_workbook))
+def test_parses_the_example_workbook():
+    data = parse_market_data(EXAMPLE_WORKBOOK)
 
     assert {SHEET_HALF_HOURLY, SHEET_HOURLY} <= set(data)
     assert all(prices for prices in data.values())
