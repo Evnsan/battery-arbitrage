@@ -97,7 +97,7 @@ def example_workbook(tmp_path: Path) -> str:
 
 def test_returns_one_market_per_worksheet_with_its_own_timestamps(
     example_workbook,
-):
+) -> None:
     expected: MarketData = {
         SHEET_HALF_HOURLY: {
             START_TIME: FIRST_HALF_HOUR_PRICE,
@@ -116,7 +116,7 @@ def test_returns_one_market_per_worksheet_with_its_own_timestamps(
     assert data == expected
 
 
-def test_prices_are_floats_and_timestamps_are_datetimes(tmp_path):
+def test_prices_are_floats_and_timestamps_are_datetimes(tmp_path) -> None:
     path = write_workbook(
         tmp_path / "m.xlsx",
         {SHEET_HOURLY: market_rows(ONE_HOUR, INTEGER_PRICE_SAMPLES)},
@@ -129,7 +129,7 @@ def test_prices_are_floats_and_timestamps_are_datetimes(tmp_path):
     assert all(isinstance(p, float) for p in market_prices.values())
 
 
-def test_price_column_is_found_by_header_not_by_position(tmp_path):
+def test_price_column_is_found_by_header_not_by_position(tmp_path) -> None:
     rows = [
         [None, NOTES_HEADER, PRICE_HEADER],
         [START_TIME, "ignore me", HEADER_LOOKUP_PRICE],
@@ -141,7 +141,7 @@ def test_price_column_is_found_by_header_not_by_position(tmp_path):
     }
 
 
-def test_month_first_timestamp_strings_are_parsed(tmp_path):
+def test_month_first_timestamp_strings_are_parsed(tmp_path) -> None:
     rows = [
         [None, PRICE_HEADER],
         [MONTH_FIRST_TIMESTAMP_TEXT, HEADER_LOOKUP_PRICE],
@@ -156,7 +156,7 @@ def test_month_first_timestamp_strings_are_parsed(tmp_path):
 @pytest.mark.parametrize(
     "timestamp_text", [ISO_TIMESTAMP_TEXT, ISO_TIMESTAMP_SPACE_TEXT]
 )
-def test_iso_timestamp_strings_are_parsed(tmp_path, timestamp_text):
+def test_iso_timestamp_strings_are_parsed(tmp_path, timestamp_text) -> None:
     rows = [
         [None, PRICE_HEADER],
         [timestamp_text, HEADER_LOOKUP_PRICE],
@@ -168,7 +168,7 @@ def test_iso_timestamp_strings_are_parsed(tmp_path, timestamp_text):
     }
 
 
-def test_blank_rows_are_ignored(tmp_path):
+def test_blank_rows_are_ignored(tmp_path) -> None:
     rows = [
         [None, PRICE_HEADER],
         [START_TIME, VALID_PRICE],
@@ -205,9 +205,7 @@ INVALID_SHEET_CASES = [
         [VALID_HEADER, VALID_ROW, [NEXT_HOUR, INVALID_PRICE_TEXT]],
         id="text-price",
     ),
-    pytest.param(
-        [VALID_HEADER, VALID_ROW, [NEXT_HOUR, "NaN"]], id="nan-price"
-    ),
+    pytest.param([VALID_HEADER, VALID_ROW, [NEXT_HOUR, "NaN"]], id="nan-price"),
     pytest.param(
         [VALID_HEADER, VALID_ROW, [NEXT_HOUR, "Infinity"]],
         id="infinite-price",
@@ -231,7 +229,9 @@ INVALID_SHEET_CASES = [
 
 
 @pytest.mark.parametrize("rows", INVALID_SHEET_CASES)
-def test_invalid_sheet_data_raises_value_error_with_sheet_name(tmp_path, rows):
+def test_invalid_sheet_data_raises_value_error_with_sheet_name(
+    tmp_path, rows
+) -> None:
     path = write_workbook(
         tmp_path / "m.xlsx",
         {
@@ -250,7 +250,7 @@ DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 EXAMPLE_WORKBOOK = DATA_DIR / "cleaned_market_data.xlsx"
 
 
-def test_parses_the_example_workbook():
+def test_parses_the_example_workbook() -> None:
     data = parse_market_data(EXAMPLE_WORKBOOK)
 
     assert {SHEET_HALF_HOURLY, SHEET_HOURLY} <= set(data)
