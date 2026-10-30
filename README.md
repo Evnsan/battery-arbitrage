@@ -49,7 +49,9 @@ The installation instructions may change depending on the final packaging and so
 
 The model accepts an Excel workbook (`.xlsx`) containing market data organized by worksheet. Each worksheet must contain timestamps and the corresponding market prices in £/MWh.
 
-The repository's example dataset contains:
+The supported example input is `data/cleaned_market_data.xlsx`. The repository also includes `data/market_data.xlsx`, which is the raw source data and is not a supported input.
+
+The example dataset contains:
 
 | Worksheet          | Market interval |
 | ------------------ | --------------- |
@@ -66,7 +68,7 @@ Once installation and the command-line interface are finalized, a typical sessio
 
 ```bash
 # Run the optimization using the example dataset
-battery-arbitrage optimize --input data/market_prices.xlsx
+battery-arbitrage optimize --input data/cleaned_market_data.xlsx
 
 # Generate or export the reports
 battery-arbitrage report --output results/

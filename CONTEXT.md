@@ -74,9 +74,9 @@ Because the final stored energy is unconstrained beyond physical feasibility, th
 
 Input data is supplied as an Excel workbook (`.xlsx`) containing one worksheet per market.
 
-Each market worksheet contains a timestamp column and a price column. The timestamp identifies the market interval, and the price is expressed in £/MWh.
+Each market worksheet contains timestamps in its first column and prices in a column whose header ends with `Price [£/MWh]`. The first column does not need a header. Timestamps may be stored as Excel datetimes, ISO-formatted strings, or month-first strings in `MM/DD/YY HH:MM` format. Timestamps identify market intervals, and prices are expressed in £/MWh.
 
-The provided workbook is one example of this format, containing:
+The supported example workbook is `data/cleaned_market_data.xlsx`. The repository also includes `data/market_data.xlsx`, which is the raw source data and is not a supported input. The example workbook contains:
 
 | Worksheet          | Timestamp interval | Price column             |
 | ------------------ | ------------------ | ------------------------ |
