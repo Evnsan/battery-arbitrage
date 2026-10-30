@@ -1,6 +1,13 @@
 """Smoke tests confirming every pipeline stage API is importable and present."""
 
-from battery_arbitrage import domain, optimization, parsing, reporting, time_alignment, validation
+from battery_arbitrage import (
+    domain,
+    optimization,
+    parsing,
+    reporting,
+    time_alignment,
+    validation,
+)
 
 
 def test_domain_module_has_expected_symbols():
