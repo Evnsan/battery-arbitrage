@@ -49,9 +49,21 @@ class DispatchRow:
     price: float
     charge_mw: float
     discharge_mw: float
+    cash_flow_gbp: float
+
+
+@dataclass(frozen=True)
+class OperationRow:
+    timestamp: datetime
+    charge_mw: float
+    discharge_mw: float
+    energy_mwh: float
+    cash_flow_gbp: float
+    cumulative_cash_flow_gbp: float
 
 
 @dataclass(frozen=True)
 class DispatchReport:
-    rows: tuple[DispatchRow, ...]
+    dispatch_rows: tuple[DispatchRow, ...]
+    operation_rows: tuple[OperationRow, ...]
     total_profit_gbp: float

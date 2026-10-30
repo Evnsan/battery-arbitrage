@@ -1,7 +1,13 @@
-from battery_arbitrage.domain import DispatchReport, OptimizationResult
+from battery_arbitrage.domain import (
+    DispatchReport,
+    OptimizationResult,
+    Timeline,
+)
 
 
-def build_report(solution: OptimizationResult) -> DispatchReport:
+def build_report(
+    solution: OptimizationResult, timeline: Timeline
+) -> DispatchReport:
     """
     Return battery-operation and market-dispatch report rows.
     """
