@@ -1,3 +1,4 @@
+import math
 from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
@@ -34,9 +35,9 @@ def parse_market_data(file_path: str | Path) -> MarketData:
         FileNotFoundError: If file_path does not exist.
         ValueError: If the file cannot be read as an Excel workbook, or if a
             worksheet has no data rows, lacks a price column, has more than one
-            price column, contains a missing or unparseable timestamp or price,
-            or contains duplicate timestamps. The message names the offending
-            worksheet.
+            price column, contains a missing or unparseable timestamp, contains
+            a missing, unparseable, or non-finite price, or contains duplicate
+            timestamps. The message names the offending worksheet.
     """
     try:
         workbook = load_workbook(file_path, read_only=True, data_only=True)
@@ -142,6 +143,11 @@ def parse_market_data(file_path: str | Path) -> MarketData:
                         f"Worksheet '{sheet_name}' has an unparseable price "
                         f"on row {row_number}: {price_value!r}"
                     ) from error
+                if not math.isfinite(price):
+                    raise ValueError(
+                        f"Worksheet '{sheet_name}' has a non-finite price "
+                        f"on row {row_number}: {price_value!r}"
+                    )
 
                 if timestamp in market_prices:
                     raise ValueError(
