@@ -2,6 +2,7 @@ import logging
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from itertools import pairwise
+from typing import Any, cast
 
 import pyomo.environ as pyo
 from pyomo.opt import SolverStatus, TerminationCondition
@@ -153,7 +154,7 @@ def _build_model(
     timestamps: tuple[datetime, ...],
     market_names: tuple[str, ...],
     steps_per_interval: dict[str, int],
-) -> pyo.ConcreteModel:
+) -> Any:
     step_count = len(timestamps)
     delta_hours = timeline.common_period.total_seconds() / 3600.0
     market_interval_pairs = [
@@ -167,19 +168,19 @@ def _build_model(
     def interval_index(market_name: str, step: int) -> int:
         return step // steps_per_interval[market_name]
 
-    def aggregate_charge(model: pyo.ConcreteModel, step: int):
+    def aggregate_charge(model: Any, step: int) -> Any:
         return pyo.quicksum(
             model.charge[market_name, interval_index(market_name, step)]
             for market_name in market_names
         )
 
-    def aggregate_discharge(model: pyo.ConcreteModel, step: int):
+    def aggregate_discharge(model: Any, step: int) -> Any:
         return pyo.quicksum(
             model.discharge[market_name, interval_index(market_name, step)]
             for market_name in market_names
         )
 
-    model = pyo.ConcreteModel()
+    model: Any = pyo.ConcreteModel()
     model.charge = pyo.Var(
         market_interval_pairs,
         domain=pyo.NonNegativeReals,
@@ -195,10 +196,10 @@ def _build_model(
         domain=pyo.NonNegativeReals,
         bounds=(0.0, config.storage_capacity_mwh),
     )
-    model.energy[0].fix(config.initial_energy_mwh)
+    cast(Any, model.energy[0]).fix(config.initial_energy_mwh)
     model.operating_mode = pyo.Var(range(step_count), domain=pyo.Binary)
 
-    def energy_balance_rule(model: pyo.ConcreteModel, step: int):
+    def energy_balance_rule(model: Any, step: int) -> Any:
         return (
             model.energy[step + 1]
             == model.energy[step]
@@ -206,17 +207,17 @@ def _build_model(
             * delta_hours
         )
 
-    def charge_limit_rule(model: pyo.ConcreteModel, step: int):
+    def charge_limit_rule(model: Any, step: int) -> Any:
         return aggregate_charge(model, step) <= (
             config.max_charge_mw * model.operating_mode[step]
         )
 
-    def discharge_limit_rule(model: pyo.ConcreteModel, step: int):
+    def discharge_limit_rule(model: Any, step: int) -> Any:
         return aggregate_discharge(model, step) <= (
             config.max_discharge_mw * (1 - model.operating_mode[step])
         )
 
-    def profit_rule(model: pyo.ConcreteModel):
+    def profit_rule(model: Any) -> Any:
         return pyo.quicksum(
             (
                 model.discharge[market_name, interval_index(market_name, step)]
@@ -244,7 +245,7 @@ def _build_model(
     return model
 
 
-def _solve(model: pyo.ConcreteModel) -> None:
+def _solve(model: Any) -> None:
     solver = pyo.SolverFactory("highs")
 
     if not solver.available(exception_flag=False):
@@ -278,7 +279,7 @@ def _solve(model: pyo.ConcreteModel) -> None:
 
 
 def _build_result(
-    model: pyo.ConcreteModel,
+    model: Any,
     timeline: Timeline,
     timestamps: tuple[datetime, ...],
     market_names: tuple[str, ...],
@@ -291,15 +292,17 @@ def _build_result(
     for market_name in market_names:
         for step, timestamp in enumerate(timestamps):
             interval_index = step // steps_per_interval[market_name]
-            charge_mw[(market_name, timestamp)] = pyo.value(
-                model.charge[market_name, interval_index]
+            charge_mw[(market_name, timestamp)] = cast(
+                float,
+                pyo.value(model.charge[market_name, interval_index]),
             )
-            discharge_mw[(market_name, timestamp)] = pyo.value(
-                model.discharge[market_name, interval_index]
+            discharge_mw[(market_name, timestamp)] = cast(
+                float,
+                pyo.value(model.discharge[market_name, interval_index]),
             )
 
     energy_mwh = {
-        timestamp: pyo.value(model.energy[step])
+        timestamp: cast(float, pyo.value(model.energy[step]))
         for step, timestamp in enumerate(timestamps)
     }
     total_profit_gbp = sum(
