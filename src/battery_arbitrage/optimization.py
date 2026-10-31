@@ -9,7 +9,8 @@ def optimize_battery(
 
     Args:
         timeline:
-            Timeline instance containing aligned market prices and common interval.
+            Timeline instance containing aligned market prices and common
+                interval.
         config:
             BatteryConfig instance. Defaults to the standard configuration.
 
