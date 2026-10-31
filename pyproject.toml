@@ -9,6 +9,9 @@ description = "Battery dispatch and arbitrage optimization across wholesale elec
 requires-python = ">=3.10"
 dynamic = ["dependencies", "optional-dependencies"]
 
+[project.scripts]
+battery-arbitrage = "battery_arbitrage.cli:main"
+
 [tool.ruff]
 line-length = 80
 target-version = "py310"

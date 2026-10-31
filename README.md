@@ -64,24 +64,33 @@ See [CONTEXT.md](CONTEXT.md) for further details.
 
 ## Usage
 
-Once installation and the command-line interface are finalized, a typical session is expected to look like this:
+Run the optimization and write both CSV reports with:
 
 ```bash
 # Run the optimization using the example dataset
-battery-arbitrage optimize --input data/cleaned_market_data.xlsx
+battery-arbitrage --input data/cleaned_market_data.xlsx
 
-# Generate or export the reports
-battery-arbitrage report --output results/
+# Choose custom paths for the CSV reports
+battery-arbitrage \
+  --input data/cleaned_market_data.xlsx \
+  --dispatch-csv results/market-dispatch.csv \
+  --operation-csv results/battery-operation.csv \
+  --start-time 2025-01-01T00:00:00 \
+  --end-time 2025-02-01T00:00:00
 ```
 
-**Note:** These commands illustrate the intended workflow and are not yet implemented command-line instructions.
+By default, the command writes `results/dispatch.csv` and
+`results/operation.csv`. Use `--tolerance-millis` to change the timestamp
+alignment tolerance; its default is 1000 milliseconds. Use `--verbosity` with
+`DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` to set log verbosity; the
+default is `INFO`. The options also have short forms: `-i`, `-d`, `-o`, `-t`,
+`-v`, `-s`, and `-e`, respectively. Time bounds use an inclusive start and
+exclusive end in ISO format. Each bound must align to a boundary shared by all
+markets. The battery starts the selected period at its configured initial
+energy.
 
-A typical session will involve:
-
-1. Selecting an input workbook and, optionally, a modeling period.
-2. Running the optimization.
-3. Reviewing the solver status and the resulting trading profit.
-4. Inspecting battery operation and market dispatch reports.
+The command prints the output paths and total profit after the reports are
+written.
 
 ## Results
 
