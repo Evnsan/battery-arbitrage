@@ -1,3 +1,4 @@
 -c requirements.txt
-pytest>=8.0
 mypy
+pytest>=8.0
+ruff

@@ -12,15 +12,17 @@ jobs:
           name: Install dependencies
           command: |
             python -m pip install --upgrade pip
-            pip install -e . "pytest>=8.0"
+            pip install -e ".[dev]"
+
+      - run:
+          name: Run linter
+          command: |
+            ruff check .
 
       - run:
           name: Run tests
           command: |
             python -m pytest
-
-      # No lint command exists yet (no ruff/flake8/mypy config).
-      # Add a lint step once a linter is introduced.
 
 workflows:
   version: 2

@@ -56,7 +56,7 @@ The battery can allocate its available power across markets, provided that the c
 
 ## Physical timeline and market commitments
 
-Battery operation is represented on a half-hourly physical timeline, corresponding to the shortest interval in the example markets.
+Battery operation is represented on a common physical timeline whose timestep is the greatest common divisor of the market intervals. In the example dataset, the 30-minute and 1-hour intervals give a half-hourly physical timeline.
 
 A commitment in a market must remain valid for that market's entire interval. Consequently, an hourly Market 2 commitment applies consistently to both half-hour timesteps within that hour.
 

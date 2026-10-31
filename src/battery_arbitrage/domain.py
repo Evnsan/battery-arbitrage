@@ -1,4 +1,3 @@
-from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import TypeAlias
@@ -21,6 +20,7 @@ EnergyByTime: TypeAlias = dict[datetime, float]
 class Timeline:
     prices: TimelinePrices
     common_period: timedelta
+    market_intervals: MarketIntervals
 
 
 @dataclass(frozen=True)
