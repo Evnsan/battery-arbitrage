@@ -14,12 +14,12 @@ def _report() -> DispatchReport:
 
 
 def test_optimize_command_uses_default_csv_paths(
-    monkeypatch, tmp_path: Path
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     input_path = tmp_path / "market-data.xlsx"
     report = _report()
     calls: list[tuple[object, ...]] = []
-    log_settings: list[tuple[object, ...]] = []
+    log_settings: list[dict[str, object]] = []
 
     def run_optimization(
         file_path: Path,
@@ -55,7 +55,7 @@ def test_optimize_command_uses_default_csv_paths(
     monkeypatch.setattr(
         cli.logging,
         "basicConfig",
-        lambda **kwargs: log_settings.append(tuple(kwargs.items())),
+        lambda **kwargs: log_settings.append(kwargs),
     )
 
     result = cli.main(["--input", str(input_path)])
@@ -77,13 +77,13 @@ def test_optimize_command_uses_default_csv_paths(
 
 
 def test_optimize_command_forwards_custom_paths_and_tolerance(
-    monkeypatch, tmp_path: Path
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     input_path = tmp_path / "market-data.xlsx"
     dispatch_path = tmp_path / "market" / "custom-dispatch.csv"
     operation_path = tmp_path / "battery" / "custom-operation.csv"
     calls: list[tuple[object, ...]] = []
-    log_settings: list[tuple[object, ...]] = []
+    log_settings: list[dict[str, object]] = []
 
     def run_optimization(
         file_path: Path,
@@ -110,7 +110,7 @@ def test_optimize_command_forwards_custom_paths_and_tolerance(
     monkeypatch.setattr(
         cli.logging,
         "basicConfig",
-        lambda **kwargs: log_settings.append(tuple(kwargs.items())),
+        lambda **kwargs: log_settings.append(kwargs),
     )
 
     result = cli.main(

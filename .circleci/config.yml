@@ -20,6 +20,11 @@ jobs:
             ruff check .
 
       - run:
+          name: Type check
+          command: |
+            mypy src
+
+      - run:
           name: Run tests
           command: |
             python -m pytest

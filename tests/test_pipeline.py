@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 import pytest
-from openpyxl import Workbook  # type: ignore[import-untyped]
+from openpyxl import Workbook
 
 from battery_arbitrage import pipeline
 from battery_arbitrage.domain import BatteryConfig, Timeline

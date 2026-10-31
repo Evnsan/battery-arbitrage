@@ -1,6 +1,7 @@
 from collections.abc import Sequence
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Any
 
 import pytest
 from openpyxl import Workbook
@@ -46,7 +47,9 @@ PARSED_ISO_TIMESTAMP = datetime(2018, 1, 2, 0, 30)
 # --- Helpers ----------------------------------------------------------------
 
 
-def write_workbook(path: Path, sheets: dict[str, list[list]]) -> str:
+def write_workbook(
+    path: Path, sheets: dict[str, list[list[Any]]]
+) -> str:
     """
     Write worksheet rows to an .xlsx file; each worksheet starts with a header.
     """
@@ -64,7 +67,7 @@ def write_workbook(path: Path, sheets: dict[str, list[list]]) -> str:
 
 def market_rows(
     interval: timedelta, prices: Sequence[int | float]
-) -> list[list]:
+) -> list[list[Any]]:
     """Build rows with a headerless timestamp column and a price header."""
     return [[None, PRICE_HEADER]] + [
         [START_TIME + interval * i, price] for i, price in enumerate(prices)
@@ -96,7 +99,7 @@ def example_workbook(tmp_path: Path) -> str:
 
 
 def test_returns_one_market_per_worksheet_with_its_own_timestamps(
-    example_workbook,
+    example_workbook: str,
 ) -> None:
     expected: MarketData = {
         SHEET_HALF_HOURLY: {
@@ -116,7 +119,7 @@ def test_returns_one_market_per_worksheet_with_its_own_timestamps(
     assert data == expected
 
 
-def test_prices_are_floats_and_timestamps_are_datetimes(tmp_path) -> None:
+def test_prices_are_floats_and_timestamps_are_datetimes(tmp_path: Path) -> None:
     path = write_workbook(
         tmp_path / "m.xlsx",
         {SHEET_HOURLY: market_rows(ONE_HOUR, INTEGER_PRICE_SAMPLES)},
@@ -129,8 +132,10 @@ def test_prices_are_floats_and_timestamps_are_datetimes(tmp_path) -> None:
     assert all(isinstance(p, float) for p in market_prices.values())
 
 
-def test_price_column_is_found_by_header_not_by_position(tmp_path) -> None:
-    rows = [
+def test_price_column_is_found_by_header_not_by_position(
+    tmp_path: Path,
+) -> None:
+    rows: list[list[Any]] = [
         [None, NOTES_HEADER, PRICE_HEADER],
         [START_TIME, "ignore me", HEADER_LOOKUP_PRICE],
     ]
@@ -141,8 +146,8 @@ def test_price_column_is_found_by_header_not_by_position(tmp_path) -> None:
     }
 
 
-def test_month_first_timestamp_strings_are_parsed(tmp_path) -> None:
-    rows = [
+def test_month_first_timestamp_strings_are_parsed(tmp_path: Path) -> None:
+    rows: list[list[Any]] = [
         [None, PRICE_HEADER],
         [MONTH_FIRST_TIMESTAMP_TEXT, HEADER_LOOKUP_PRICE],
     ]
@@ -156,8 +161,10 @@ def test_month_first_timestamp_strings_are_parsed(tmp_path) -> None:
 @pytest.mark.parametrize(
     "timestamp_text", [ISO_TIMESTAMP_TEXT, ISO_TIMESTAMP_SPACE_TEXT]
 )
-def test_iso_timestamp_strings_are_parsed(tmp_path, timestamp_text) -> None:
-    rows = [
+def test_iso_timestamp_strings_are_parsed(
+    tmp_path: Path, timestamp_text: str
+) -> None:
+    rows: list[list[Any]] = [
         [None, PRICE_HEADER],
         [timestamp_text, HEADER_LOOKUP_PRICE],
     ]
@@ -168,8 +175,8 @@ def test_iso_timestamp_strings_are_parsed(tmp_path, timestamp_text) -> None:
     }
 
 
-def test_blank_rows_are_ignored(tmp_path) -> None:
-    rows = [
+def test_blank_rows_are_ignored(tmp_path: Path) -> None:
+    rows: list[list[Any]] = [
         [None, PRICE_HEADER],
         [START_TIME, VALID_PRICE],
         [None, None],
@@ -230,7 +237,7 @@ INVALID_SHEET_CASES = [
 
 @pytest.mark.parametrize("rows", INVALID_SHEET_CASES)
 def test_invalid_sheet_data_raises_value_error_with_sheet_name(
-    tmp_path, rows
+    tmp_path: Path, rows: Any
 ) -> None:
     path = write_workbook(
         tmp_path / "m.xlsx",
