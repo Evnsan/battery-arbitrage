@@ -22,10 +22,10 @@ class _HighsConfig:
 _HIGHS_CONFIG = _HighsConfig()
 
 _DEFAULT_BATTERY_CONFIG = BatteryConfig(
-    max_charge_mw=5.0,
-    max_discharge_mw=5.0,
-    storage_capacity_mwh=10.0,
-    initial_energy_mwh=2.0,
+    max_charge_mw=2.0,
+    max_discharge_mw=2.0,
+    storage_capacity_mwh=4.0,
+    initial_energy_mwh=0,
 )
 
 
