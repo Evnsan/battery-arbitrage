@@ -73,6 +73,13 @@ def build_report(
         dispatch_rows=dispatch_rows,
         operation_rows=tuple(operation_rows),
         total_profit_gbp=solution.total_profit_gbp,
+        modeled_period_start=(timestamps[0] if timestamps else None),
+        modeled_period_end=(
+            timestamps[-1] + solution.timestep if timestamps else None
+        ),
+        timestep=solution.timestep,
+        battery_config=solution.battery_config,
+        solver_relative_mip_gap=solution.solver_relative_mip_gap,
     )
     logger.info(
         "Report built with %d dispatch rows, %d operation rows, "

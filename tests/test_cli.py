@@ -42,13 +42,13 @@ def test_optimize_command_uses_default_csv_paths(
 
     def write_report_csv(
         actual_report: object,
-        dispatch_path: Path,
-        operation_path: Path,
+        output_directory: Path,
     ) -> tuple[Path, Path]:
-        calls.append(
-            ("export", actual_report, dispatch_path, operation_path)
+        calls.append(("export", actual_report, output_directory))
+        return (
+            output_directory / "dispatch.csv",
+            output_directory / "operation.csv",
         )
-        return dispatch_path, operation_path
 
     monkeypatch.setattr(cli, "run_optimization", run_optimization)
     monkeypatch.setattr(cli, "write_report_csv", write_report_csv)
@@ -70,18 +70,16 @@ def test_optimize_command_uses_default_csv_paths(
         (
             "export",
             report,
-            Path("results/dispatch.csv"),
-            Path("results/operation.csv"),
+            Path("results/market-data_full"),
         ),
     ]
 
 
-def test_optimize_command_forwards_custom_paths_and_tolerance(
+def test_optimize_command_forwards_output_directory_and_tolerance(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     input_path = tmp_path / "market-data.xlsx"
-    dispatch_path = tmp_path / "market" / "custom-dispatch.csv"
-    operation_path = tmp_path / "battery" / "custom-operation.csv"
+    output_directory = tmp_path / "custom-results"
     calls: list[tuple[object, ...]] = []
     log_settings: list[dict[str, object]] = []
 
@@ -99,11 +97,13 @@ def test_optimize_command_forwards_custom_paths_and_tolerance(
 
     def write_report_csv(
         _report: object,
-        actual_dispatch_path: Path,
-        actual_operation_path: Path,
+        actual_output_directory: Path,
     ) -> tuple[Path, Path]:
-        calls.append((actual_dispatch_path, actual_operation_path))
-        return actual_dispatch_path, actual_operation_path
+        calls.append((actual_output_directory,))
+        return (
+            actual_output_directory / "dispatch.csv",
+            actual_output_directory / "operation.csv",
+        )
 
     monkeypatch.setattr(cli, "run_optimization", run_optimization)
     monkeypatch.setattr(cli, "write_report_csv", write_report_csv)
@@ -118,9 +118,7 @@ def test_optimize_command_forwards_custom_paths_and_tolerance(
             "-i",
             str(input_path),
             "-d",
-            str(dispatch_path),
-            "-o",
-            str(operation_path),
+            str(output_directory),
             "-t",
             "250",
             "-v",
@@ -142,7 +140,7 @@ def test_optimize_command_forwards_custom_paths_and_tolerance(
             datetime(2025, 1, 1, 1),
             datetime(2025, 1, 1, 2),
         ),
-        (dispatch_path, operation_path),
+        (output_directory,),
     ]
 
 

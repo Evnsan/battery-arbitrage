@@ -82,6 +82,7 @@ def optimize_battery(
         timestamps,
         market_names,
         steps_per_interval,
+        config,
     )
 
 
@@ -284,6 +285,7 @@ def _build_result(
     timestamps: tuple[datetime, ...],
     market_names: tuple[str, ...],
     steps_per_interval: dict[str, int],
+    config: BatteryConfig,
 ) -> OptimizationResult:
     delta_hours = timeline.common_period.total_seconds() / 3600.0
     charge_mw: dict[tuple[str, datetime], float] = {}
@@ -324,4 +326,6 @@ def _build_result(
         discharge_mw=discharge_mw,
         energy_mwh=energy_mwh,
         total_profit_gbp=total_profit_gbp,
+        battery_config=config,
+        solver_relative_mip_gap=_HIGHS_CONFIG.relative_mip_gap,
     )
