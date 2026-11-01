@@ -78,7 +78,7 @@ Alignment works as follows:
 
 The objective is to maximize total trading profit over the modeled period.
 
-Trading profit is the sum of electricity sales revenue minus electricity purchase costs across both markets. Each transaction's cash flow is calculated using its committed power, market price, and interval duration.
+Trading profit is the sum of electricity sales revenue minus electricity purchase costs across all markets. Each transaction's cash flow is calculated using its committed power, market price, and interval duration.
 
 Because the final stored energy is unconstrained beyond physical feasibility, the model may use energy already stored at the beginning of the modeled period to generate revenue. The resulting profit therefore does not necessarily represent a complete cycle in which the battery returns to its initial energy level.
 
@@ -125,7 +125,7 @@ The optimization result is converted into two reports at the resolution of the p
 - **Market dispatch:** one row per timestamp and market with the price, the charging and discharging power, and the cash flow `(discharge - charge) × price × timestep` of that row. A commitment in a market whose interval spans several timesteps appears on several rows with the same power, each carrying its share of the cash flow.
 - **Battery operation:** one row per timestamp with the charging and discharging power and cash flow summed across markets, the stored energy at the **start** of the timestep, and the cumulative cash flow.
 
-Both reports are exported to CSV with ISO 8601 timestamps and unrounded values. The CSV files do not contain the total profit, the modeled period or the battery parameters; the total profit is printed by the command-line interface.
+Both reports are exported to CSV with ISO 8601 timestamps and unrounded values. `operation.csv` names its `energy_start_mwh` column to show that energy is measured at the start of each timestep. A companion `metadata.json` records total profit, the actual modeled period after common-coverage clipping, physical timestep, battery parameters, and the solver's relative MIP gap tolerance. The command-line interface also prints total profit.
 
 ## Battery configuration
 

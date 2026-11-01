@@ -53,7 +53,9 @@ def optimize_battery(
 
     Raises:
         ValueError: If inputs are invalid or the model is infeasible.
-        RuntimeError: If the solver is unavailable or optimization fails.
+        RuntimeError: If the solver is unavailable or optimization fails,
+            including when the solver time limit is reached before an
+            optimal solution is found.
 
     Assumptions:
         - All market prices are known over the optimization horizon.
@@ -61,6 +63,11 @@ def optimize_battery(
         - The final battery energy is unconstrained.
         - Market commitments remain constant throughout each market interval.
         - The battery cannot charge and discharge simultaneously.
+
+    The model is solved with HiGHS using a time limit of 300 seconds and a
+    relative MIP gap of 2%, so the solution can be up to about 2% below the
+    true optimum. The timeline is expected to hold prices that are constant
+    within each market interval, as guaranteed by ``align_market_data``.
     """
     if config is None:
         config = _DEFAULT_BATTERY_CONFIG

@@ -83,21 +83,24 @@ Run the optimization and write both CSV reports with:
 # Run the optimization using the example dataset
 battery-arbitrage --input data/cleaned_market_data.xlsx
 
-# Choose custom paths for the CSV reports and optimize January 2018 only
+# Choose an output directory and optimize January 2018 only
 battery-arbitrage \
   --input data/cleaned_market_data.xlsx \
-  --dispatch-csv results/market-dispatch.csv \
-  --operation-csv results/battery-operation.csv \
+  --output-dir results/january-2018 \
   --start-time 2018-01-01T00:00:00 \
   --end-time 2018-02-01T00:00:00
 ```
 
-By default, the command writes `results/dispatch.csv` and
-`results/operation.csv`. Use `--tolerance-millis` to change the timestamp
-alignment tolerance; its default is 1000 milliseconds. Use `--verbosity` with
+By default, the command creates a directory under `results/` using the input
+workbook name and selected time window (for example,
+`results/cleaned_market_data_20180101T0000_20180201T0000`); without time bounds,
+it uses `results/<input-name>_full`. Both reports are named `dispatch.csv` and
+`operation.csv` inside that directory. Use `--output-dir` to choose another
+directory. Use `--tolerance-millis` to change the timestamp alignment
+tolerance; its default is 1000 milliseconds. Use `--verbosity` with
 `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL` to set log verbosity; the
-default is `INFO`. The options also have short forms: `-i`, `-d`, `-o`, `-t`,
-`-v`, `-s`, and `-e`, respectively.
+default is `INFO`. The options also have short forms: `-i`, `-d`, `-t`, `-v`,
+`-s`, and `-e`, respectively.
 
 Time bounds use an inclusive start and exclusive end in ISO format
 (`[start, end)`). Each bound must align to a boundary shared by all markets
@@ -116,10 +119,15 @@ can pass a `BatteryConfig` to `battery_arbitrage.pipeline.run_optimization`.
 
 ## Results
 
-Two CSV files are written, both at the resolution of the physical timeline (for the example data, 30 minutes). All values are unrounded.
+Two CSV files and a `metadata.json` file are written in the selected output
+directory. Both reports use the physical timeline resolution (30 minutes for
+the example data), and values are unrounded. The metadata records total
+profit, the actual modeled period after common-coverage clipping, timestep,
+battery parameters and solver relative MIP gap tolerance.
 
 - **Market dispatch report** (`dispatch.csv`): one row per timestamp and market with columns `timestamp`, `market_name`, `price_gbp_per_mwh`, `charge_mw`, `discharge_mw` and `cash_flow_gbp`. A commitment in an hourly market appears on two consecutive rows with the same power; each row carries the cash flow of one half hour, so the two rows together equal the commitment's cash flow over the full hour.
-- **Battery operation report** (`operation.csv`): one row per timestamp with columns `timestamp`, `charge_mw`, `discharge_mw`, `energy_mwh`, `cash_flow_gbp` and `cumulative_cash_flow_gbp`, summed across markets. `energy_mwh` is the stored energy at the **start** of the timestep. The stored energy after the last timestep is not reported.
+- **Battery operation report** (`operation.csv`): one row per timestamp with columns `timestamp`, `charge_mw`, `discharge_mw`, `energy_start_mwh`, `cash_flow_gbp` and `cumulative_cash_flow_gbp`, summed across markets. `energy_start_mwh` is the stored energy at the **start** of the timestep. The stored energy after the last timestep is not reported.
+- **Metadata** (`metadata.json`): total profit, modeled period as a half-open interval, physical timestep, battery parameters, and the solver's relative MIP gap tolerance. The modeled period reflects common-coverage clipping and any requested time filter.
 
 The total profit is printed to the console and is not stored in the CSV files. The solver status is written to the log, and the HiGHS solver log is always printed, regardless of `--verbosity`.
 

@@ -30,9 +30,15 @@ def run_optimization(
         config: Battery configuration. Defaults to the standard configuration.
         tolerance_millis: Maximum timestamp deviation allowed during validation
             and alignment, in milliseconds.
+        start_time: Inclusive start of the optimization period. Defaults to
+            the start of the aligned timeline.
+        end_time: Exclusive end of the optimization period. Defaults to the
+            end of the aligned timeline. Bounds outside the timeline are
+            clipped; each bound must match a boundary shared by all markets.
 
     Returns:
-        DispatchReport containing dispatch rows and total profit.
+        DispatchReport containing dispatch rows, operation rows and total
+        profit.
 
     Raises:
         FileNotFoundError: If file_path does not exist.
