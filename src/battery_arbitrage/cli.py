@@ -29,17 +29,9 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "-d",
-        "--dispatch-csv",
+        "--output-dir",
         type=Path,
-        default=Path("results/dispatch.csv"),
-        help="dispatch report output path (default: results/dispatch.csv)",
-    )
-    parser.add_argument(
-        "-o",
-        "--operation-csv",
-        type=Path,
-        default=Path("results/operation.csv"),
-        help="operation report output path (default: results/operation.csv)",
+        help="directory for dispatch.csv and operation.csv reports",
     )
     parser.add_argument(
         "-t",
@@ -70,6 +62,27 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _default_output_directory(
+    input_path: Path,
+    start_time: datetime | None,
+    end_time: datetime | None,
+) -> Path:
+    """Build a concise result directory name from the input and time filter."""
+
+    def format_bound(bound: datetime | None, missing: str) -> str:
+        return missing if bound is None else bound.strftime("%Y%m%dT%H%M")
+
+    period = (
+        "full"
+        if start_time is None and end_time is None
+        else (
+            f"{format_bound(start_time, 'from')}_"
+            f"{format_bound(end_time, 'to')}"
+        )
+    )
+    return Path("results") / f"{input_path.stem}_{period}"
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """Run the command-line interface."""
     parser = _build_parser()
@@ -87,10 +100,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             start_time=args.start_time,
             end_time=args.end_time,
         )
+        output_directory = args.output_dir or _default_output_directory(
+            args.input, args.start_time, args.end_time
+        )
         dispatch_path, operation_path = write_report_csv(
             report,
-            args.dispatch_csv,
-            args.operation_csv,
+            output_directory,
         )
     except (OSError, ValueError, RuntimeError) as error:
         print(f"Error: {error}", file=sys.stderr)

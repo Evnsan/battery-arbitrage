@@ -23,18 +23,18 @@ OPERATION_FIELDS = (
 
 def write_report_csv(
     report: DispatchReport,
-    dispatch_path: str | Path,
-    operation_path: str | Path,
+    output_directory: str | Path,
 ) -> tuple[Path, Path]:
     """Write dispatch and operation report rows as CSV files.
 
-    Parent directories are created when they do not already exist. Returns
-    the dispatch and operation file paths, in that order.
+    The output directory is created when it does not already exist. Files are
+    named ``dispatch.csv`` and ``operation.csv``. Returns their paths, in
+    that order.
     """
-    dispatch_path = Path(dispatch_path)
-    operation_path = Path(operation_path)
-    dispatch_path.parent.mkdir(parents=True, exist_ok=True)
-    operation_path.parent.mkdir(parents=True, exist_ok=True)
+    output_directory = Path(output_directory)
+    output_directory.mkdir(parents=True, exist_ok=True)
+    dispatch_path = output_directory / "dispatch.csv"
+    operation_path = output_directory / "operation.csv"
 
     with dispatch_path.open("w", newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(file, fieldnames=DISPATCH_FIELDS)
