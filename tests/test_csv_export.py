@@ -36,14 +36,13 @@ def test_writes_dispatch_and_operation_reports(tmp_path: Path) -> None:
         total_profit_gbp=50.0,
     )
 
-    dispatch_target = tmp_path / "nested" / "market" / "dispatch-data.csv"
-    operation_target = tmp_path / "summary" / "battery-operation.csv"
+    output_directory = tmp_path / "nested" / "reports"
     dispatch_path, operation_path = write_report_csv(
-        report, dispatch_target, operation_target
+        report, output_directory
     )
 
-    assert dispatch_path == dispatch_target
-    assert operation_path == operation_target
+    assert dispatch_path == output_directory / "dispatch.csv"
+    assert operation_path == output_directory / "operation.csv"
     assert dispatch_path.exists()
     assert operation_path.exists()
     with dispatch_path.open(newline="", encoding="utf-8") as dispatch_file:
@@ -78,11 +77,7 @@ def test_writes_headers_for_empty_reports(tmp_path: Path) -> None:
         dispatch_rows=(), operation_rows=(), total_profit_gbp=0.0
     )
 
-    dispatch_path, operation_path = write_report_csv(
-        report,
-        tmp_path / "empty-dispatch.csv",
-        tmp_path / "empty-operation.csv",
-    )
+    dispatch_path, operation_path = write_report_csv(report, tmp_path)
 
     with dispatch_path.open(newline="", encoding="utf-8") as dispatch_file:
         assert next(csv.reader(dispatch_file)) == [
