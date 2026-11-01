@@ -1,4 +1,5 @@
 import csv
+import json
 from datetime import datetime
 from pathlib import Path
 
@@ -65,11 +66,16 @@ def test_writes_dispatch_and_operation_reports(tmp_path: Path) -> None:
             "timestamp": "2025-01-01T00:30:00",
             "charge_mw": "0.0",
             "discharge_mw": "2.0",
-            "energy_mwh": "1.0",
+            "energy_start_mwh": "1.0",
             "cash_flow_gbp": "50.0",
             "cumulative_cash_flow_gbp": "50.0",
         }
     ]
+    metadata = json.loads(
+        (output_directory / "metadata.json").read_text(encoding="utf-8")
+    )
+    assert metadata["total_profit_gbp"] == 50.0
+    assert metadata["modeled_period_start_inclusive"] is None
 
 
 def test_writes_headers_for_empty_reports(tmp_path: Path) -> None:
@@ -93,7 +99,8 @@ def test_writes_headers_for_empty_reports(tmp_path: Path) -> None:
             "timestamp",
             "charge_mw",
             "discharge_mw",
-            "energy_mwh",
+            "energy_start_mwh",
             "cash_flow_gbp",
             "cumulative_cash_flow_gbp",
         ]
+    assert (tmp_path / "metadata.json").exists()
