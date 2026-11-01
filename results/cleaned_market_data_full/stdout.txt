@@ -1,0 +1,84 @@
+INFO: Starting optimization pipeline for data/cleaned_market_data.xlsx
+INFO: Parsed market data
+INFO: Validated market data
+INFO: Aligned market data to the physical timeline
+INFO: Optimizing battery dispatch
+INFO: Starting HiGHS solve (time limit 300 seconds, relative MIP gap 2.0%)
+Running HiGHS 1.15.1 (git hash: 04024d7): Copyright (c) 2026 under MIT licence terms
+Includes third-party software components, see THIRD_PARTY_NOTICES.md for full details
+MIP has 157824 rows; 263041 cols; 631295 nonzeros; 52608 integer variables (52608 binary)
+Coefficient ranges:
+  Matrix  [5e-01, 2e+00]
+  Cost    [5e-03, 5e+02]
+  Bound   [1e+00, 4e+00]
+  RHS     [2e+00, 2e+00]
+Presolving model
+157824 rows, 263040 cols, 631295 nonzeros 0s
+157824 rows, 263040 cols, 631295 nonzeros 1s
+Presolve reductions: rows 157824(-0); columns 263040(-1); nonzeros 631295(-0) 
+
+Solving MIP model with:
+   157824 rows
+   263040 cols (52608 binary, 0 integer, 0 implied int., 210432 continuous, 0 domain fixed)
+   631295 nonzeros
+   Thread count 6 (of 12 threads). Using 1 max workers. Parallel search off
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+ J       0       0         0   0.00%   inf             -0                 Large        0      0      0         0     3.6s
+ R       0       0         0   0.00%   323970.0625     277759.725        16.64%        0      0      0    175531    14.8s
+         0       0         0   0.00%   306359.385014   277759.725        10.30%    47103  24653      0    199078    24.3s
+         0       0         0   0.00%   303377.449905   277759.725         9.22%    69312  34838      0    207403    32.9s
+         0       0         0   0.00%   300541.102184   277759.725         8.20%    71885  45776      0    219351    39.2s
+         0       0         0   0.00%   299262.807309   277759.725         7.74%    73567  51684      0    225735    44.4s
+         0       0         0   0.00%   298773.807229   277759.725         7.57%    72168  54744      0    229090    50.7s
+         0       0         0   0.00%   298197.076916   277759.725         7.36%    71525  43266      0    234963    57.9s
+         0       0         0   0.00%   297368.007056   277759.725         7.06%    60100  47059      0    240194    64.3s
+         0       0         0   0.00%   296848.947482   277759.725         6.87%    48139  40848      0    244440    70.2s
+         0       0         0   0.00%   296535.039427   277759.725         6.76%    52804  42987      0    247807    75.5s
+         0       0         0   0.00%   296407.990301   277759.725         6.71%    49169  40722      0    249878    80.5s
+ L       0       0         0   0.00%   296353.997124   292033.315         1.48%    48788  36323      0    250814   214.0s
+         1       0         1 100.00%   296353.997124   292033.315         1.48%    42864  36323      0    313320   214.0s
+
+Solving report
+  Status            Optimal
+  Primal bound      292033.315
+  Dual bound        296353.997124
+  Gap               1.48% (tolerance: 2%)
+  P-D integral      14.7586968901
+  Solution status   feasible
+                    292033.315 (objective)
+                    0 (bound viol.)
+                    2.22044604925e-16 (int. viol.)
+                    0 (row viol.)
+  Timing            214.02
+                    4.11 (Presolve)
+                        MIP    time [calls] = 1.57 [1]
+                        subMIP time [calls] = 2.54 [2]
+                    209.89 (Solve)
+                        MIP    time [calls] = 83.93 [1]
+                        subMIP time [calls] = 125.96 [2]
+                    0.00 (Postsolve)
+                        MIP    time [calls] = 0.00 [1]
+                        subMIP time [calls] = 0.00 [2]
+  Max sub-MIP depth 4
+  Nodes             1
+  Repair LPs        0
+  LP iterations     313320
+                    0 (strong br.)
+                    75283 (separation)
+                    62506 (heuristics)
+INFO: HiGHS solve finished with termination condition optimal
+INFO: Optimization completed
+INFO: Building report for 52608 timesteps across 2 markets
+INFO: Report built with 105216 dispatch rows, 52608 operation rows, and profit £292033.32
+INFO: Built optimization report
+Dispatch report saved to results/cleaned_market_data_full/dispatch.csv
+Operation report saved to results/cleaned_market_data_full/operation.csv
+Total profit: £292033.32

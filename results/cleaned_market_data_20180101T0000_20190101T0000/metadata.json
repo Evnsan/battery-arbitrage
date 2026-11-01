@@ -1,0 +1,13 @@
+{
+  "total_profit_gbp": 101404.905,
+  "modeled_period_start_inclusive": "2018-01-01T00:00:00",
+  "modeled_period_end_exclusive": "2019-01-01T00:00:00",
+  "timestep_seconds": 1800.0,
+  "battery": {
+    "max_charge_mw": 2.0,
+    "max_discharge_mw": 2.0,
+    "storage_capacity_mwh": 4.0,
+    "initial_energy_mwh": 0
+  },
+  "solver_relative_mip_gap_tolerance": 0.02
+}
