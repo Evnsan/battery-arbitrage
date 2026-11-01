@@ -1,0 +1,75 @@
+INFO: Starting optimization pipeline for data/cleaned_market_data.xlsx
+INFO: Parsed market data
+INFO: Validated market data
+INFO: Aligned market data to the physical timeline
+INFO: Selected requested optimization period
+INFO: Optimizing battery dispatch
+INFO: Starting HiGHS solve (time limit 300 seconds, relative MIP gap 2.0%)
+Running HiGHS 1.15.1 (git hash: 04024d7): Copyright (c) 2026 under MIT licence terms
+Includes third-party software components, see THIRD_PARTY_NOTICES.md for full details
+MIP has 4464 rows; 7441 cols; 17855 nonzeros; 1488 integer variables (1488 binary)
+Coefficient ranges:
+  Matrix  [5e-01, 2e+00]
+  Cost    [2e+00, 1e+02]
+  Bound   [1e+00, 4e+00]
+  RHS     [2e+00, 2e+00]
+Presolving model
+4464 rows, 7440 cols, 17855 nonzeros 0s
+4464 rows, 7440 cols, 17855 nonzeros 0s
+Presolve reductions: rows 4464(-0); columns 7440(-1); nonzeros 17855(-0) 
+
+Solving MIP model with:
+   4464 rows
+   7440 cols (1488 binary, 0 integer, 0 implied int., 5952 continuous, 0 domain fixed)
+   17855 nonzeros
+   Thread count 6 (of 12 threads). Using 1 max workers. Parallel search off
+
+Src: B => Branching; C => Central rounding; F => Feasibility pump; H => Heuristic;
+     I => Shifting; J => Feasibility jump; L => Sub-MIP; P => Empty MIP; R => Randomized rounding;
+     S => Solve LP; T => Evaluate node; U => Unbounded; X => User solution; Y => HiGHS solution;
+     Z => ZI Round; l => Trivial lower; p => Trivial point; u => Trivial upper; z => Trivial zero
+
+        Nodes      |    B&B Tree     |            Objective Bounds              |  Dynamic Constraints |       Work      
+Src  Proc. InQueue |  Leaves   Expl. | BestBound       BestSol              Gap |   Cuts   InLp Confl. | LpIters     Time
+
+ J       0       0         0   0.00%   inf             -0                 Large        0      0      0         0     0.1s
+ R       0       0         0   0.00%   9142.5725       7717.925          18.46%        0      0      0      4956     0.2s
+ L       0       0         0   0.00%   8328.680172     8316.935           0.14%    10788    957      0      6987     2.2s
+         1       0         1 100.00%   8328.680172     8316.935           0.14%    10788    957      0      9299     2.2s
+
+Solving report
+  Status            Optimal
+  Primal bound      8316.935
+  Dual bound        8328.68017223
+  Gap               0.141% (tolerance: 2%)
+  P-D integral      0.16719792436
+  Solution status   feasible
+                    8316.935 (objective)
+                    0 (bound viol.)
+                    1.7763568394e-15 (int. viol.)
+                    0 (row viol.)
+  Timing            2.20
+                    0.08 (Presolve)
+                        MIP    time [calls] = 0.04 [1]
+                        subMIP time [calls] = 0.05 [2]
+                    2.11 (Solve)
+                        MIP    time [calls] = 0.97 [1]
+                        subMIP time [calls] = 1.14 [2]
+                    0.00 (Postsolve)
+                        MIP    time [calls] = 0.00 [1]
+                        subMIP time [calls] = 0.00 [2]
+  Max sub-MIP depth 4
+  Nodes             1
+  Repair LPs        0
+  LP iterations     9299
+                    0 (strong br.)
+                    2031 (separation)
+                    2312 (heuristics)
+INFO: HiGHS solve finished with termination condition optimal
+INFO: Optimization completed
+INFO: Building report for 1488 timesteps across 2 markets
+INFO: Report built with 2976 dispatch rows, 1488 operation rows, and profit £8316.93
+INFO: Built optimization report
+Dispatch report saved to results/cleaned_market_data_20180101T0000_20180201T0000/dispatch.csv
+Operation report saved to results/cleaned_market_data_20180101T0000_20180201T0000/operation.csv
+Total profit: £8316.93
