@@ -24,6 +24,14 @@ class Timeline:
 
 
 @dataclass(frozen=True)
+class BatteryConfig:
+    max_charge_mw: float
+    max_discharge_mw: float
+    storage_capacity_mwh: float
+    initial_energy_mwh: float
+
+
+@dataclass(frozen=True)
 class OptimizationResult:
     timestamps: tuple[datetime, ...]
     market_names: tuple[MarketName, ...]
@@ -32,14 +40,8 @@ class OptimizationResult:
     discharge_mw: PowerByMarketAndTime
     energy_mwh: EnergyByTime
     total_profit_gbp: float
-
-
-@dataclass(frozen=True)
-class BatteryConfig:
-    max_charge_mw: float
-    max_discharge_mw: float
-    storage_capacity_mwh: float
-    initial_energy_mwh: float
+    battery_config: BatteryConfig | None = None
+    solver_relative_mip_gap: float | None = None
 
 
 @dataclass(frozen=True)
@@ -67,3 +69,8 @@ class DispatchReport:
     dispatch_rows: tuple[DispatchRow, ...]
     operation_rows: tuple[OperationRow, ...]
     total_profit_gbp: float
+    modeled_period_start: datetime | None = None
+    modeled_period_end: datetime | None = None
+    timestep: timedelta | None = None
+    battery_config: BatteryConfig | None = None
+    solver_relative_mip_gap: float | None = None
