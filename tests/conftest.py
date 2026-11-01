@@ -9,7 +9,7 @@ from battery_arbitrage.domain import BatteryConfig
 
 @pytest.fixture
 def battery_config() -> BatteryConfig:
-    """Standard battery configuration used across the project."""
+    """Shared battery configuration used by tests."""
     return BatteryConfig(
         max_charge_mw=5.0,
         max_discharge_mw=5.0,

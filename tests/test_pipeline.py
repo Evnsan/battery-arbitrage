@@ -234,11 +234,14 @@ def test_stage_errors_propagate_and_stop_later_stages(
     assert calls == expected_calls
 
 
-def test_run_optimization_builds_integrated_report(tmp_path: Path) -> None:
+def test_run_optimization_builds_integrated_report(
+    tmp_path: Path,
+    battery_config: BatteryConfig,
+) -> None:
     path = tmp_path / "constant-prices.xlsx"
     _write_workbook(path)
 
-    report = pipeline.run_optimization(path)
+    report = pipeline.run_optimization(path, battery_config)
 
     assert len(report.dispatch_rows) == 8
     assert len(report.operation_rows) == 4
@@ -249,17 +252,22 @@ def test_run_optimization_builds_integrated_report(tmp_path: Path) -> None:
     )
     dispatch_cash_flow = sum(row.cash_flow_gbp for row in report.dispatch_rows)
     assert dispatch_cash_flow == pytest.approx(report.total_profit_gbp)
-    assert all(0.0 <= row.energy_mwh <= 10.0 for row in report.operation_rows)
+    assert all(
+        0.0 <= row.energy_mwh <= battery_config.storage_capacity_mwh
+        for row in report.operation_rows
+    )
 
 
 def test_run_optimization_uses_only_requested_period(
     tmp_path: Path,
+    battery_config: BatteryConfig,
 ) -> None:
     path = tmp_path / "constant-prices.xlsx"
     _write_workbook(path)
 
     report = pipeline.run_optimization(
         path,
+        battery_config,
         start_time=START + ONE_HOUR,
         end_time=START + ONE_HOUR * 2,
     )

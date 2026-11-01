@@ -37,10 +37,10 @@ The model uses the following simplified battery configuration:
 
 | Parameter                 | Value | Unit |
 | ------------------------- | ----: | ---- |
-| Maximum charging power    |     5 | MW   |
-| Maximum discharging power |     5 | MW   |
-| Energy storage capacity   |    10 | MWh  |
-| Initial stored energy     |     2 | MWh  |
+| Maximum charging power    |     2 | MW   |
+| Maximum discharging power |     2 | MW   |
+| Energy storage capacity   |     4 | MWh  |
+| Initial stored energy     |     0 | MWh  |
 
 The following assumptions apply:
 

@@ -161,13 +161,15 @@ def test_respects_capacity_and_constant_market_commitments(
     assert result.total_profit_gbp == pytest.approx(460.0)
 
 
-def test_allows_sale_of_initial_energy() -> None:
+def test_allows_sale_of_initial_energy(
+    battery_config: BatteryConfig,
+) -> None:
     timeline = _timeline(
         {"Market 1": (100.0,)},
         {"Market 1": HALF_HOUR},
     )
 
-    result = optimize_battery(timeline)
+    result = optimize_battery(timeline, battery_config)
 
     assert result.timestamps == (START_TIME,)
     _assert_dense_results(result)
