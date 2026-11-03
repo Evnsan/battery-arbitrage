@@ -30,7 +30,7 @@ The pipeline runs these stages in order:
 5. **Optimize** with HiGHS. Market commitments are constant over each market interval; the battery's energy and power constraints apply at every physical timestep.
 6. **Report** dispatch and operation rows and export them to CSV.
 
-See [CONTEXT.md](CONTEXT.md) for the domain assumptions, battery parameters, and input data format.
+See [domain context](docs/CONTEXT.md) for the domain assumptions, battery parameters, and input data format. The [mathematical formulation](docs/mathematical_formulation.pdf) describes the optimization model, and the [architecture overview](docs/architecture_overview.pdf) describes the application structure and module responsibilities.
 
 ## Requirements
 
@@ -73,7 +73,7 @@ The example dataset contains half-hourly and hourly prices from 1 January 2018 t
 
 Each market must have a consistent interval duration, with timestamps identifying consecutive intervals throughout the modeled period. Gaps, duplicate timestamps, missing or non-finite prices, and series with fewer than two observations are rejected with an error that names the worksheet. Timestamps are interpreted as the **start** of each interval.
 
-See [CONTEXT.md](CONTEXT.md) for further details.
+See [domain context](docs/CONTEXT.md) for further details.
 
 ## Usage
 

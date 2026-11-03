@@ -4,7 +4,7 @@
 
 - Keep the implementation simple and avoid unnecessary abstractions.
 - Prefer readable, maintainable code over clever solutions.
-- Follow the domain assumptions documented in `CONTEXT.md`.
+- Follow the domain assumptions documented in `docs/CONTEXT.md`.
 - Do not introduce requirements or assumptions that are not documented or agreed upon.
 
 ## Architecture
@@ -30,7 +30,7 @@ Discuss and agree on an approach before changing module APIs or shared data stru
 
 ## Quality checks
 
-Before submitting changes, run the checks that CI runs: `ruff check .`, `mypy src` and `python -m pytest`. Keep docstrings and the documentation (`README.md`, `CONTEXT.md`) in line with the behavior of the code.
+Before submitting changes, run the checks that CI runs: `ruff check .`, `mypy src` and `python -m pytest`. Keep docstrings and the documentation (`README.md`, `docs/CONTEXT.md`) in line with the behavior of the code.
 
 ## Scope
 
