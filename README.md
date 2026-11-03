@@ -30,7 +30,7 @@ The pipeline runs these stages in order:
 5. **Optimize** with HiGHS. Market commitments are constant over each market interval; the battery's energy and power constraints apply at every physical timestep.
 6. **Report** dispatch and operation rows and export them to CSV.
 
-See [domain context](docs/CONTEXT.md) for the domain assumptions, battery parameters, and input data format. The [mathematical formulation](docs/mathematical_formulation.pdf) describes the optimization model.
+See [domain context](docs/CONTEXT.md) for the domain assumptions, battery parameters, and input data format. The [mathematical formulation](docs/mathematical_formulation.pdf) describes the optimization model, and the [architecture overview](docs/architecture_overview.pdf) describes the application structure and module responsibilities.
 
 ## Requirements
 
